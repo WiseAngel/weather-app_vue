@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+
 export default {
   name: 'Main',
   data() {
@@ -31,14 +32,13 @@ export default {
       wind: '',
       overcast: '',
       icon: '',
+      position: '',
+      API: 'http://api.openweathermap.org/data/2.5/weather?units=metric',
+      KEY: '&lang=ru&APPID=b46555d11adddbc7266f70b191fda39f',
     };
   },
   methods: {
-    getWeather() {
-      const url = 'http://api.openweathermap.org/data/2.5/weather?q=London,uk&units=metric&APPID=b46555d11adddbc7266f70b191fda39f';
-      // const API = 'http://api.openweathermap.org/data/2.5/weather?units=metric';
-      // const KEY = '&APPID=b46555d11adddbc7266f70b191fda39f';
-
+    getWeather(url) {
       axios
         .get(url)
         .then((response) => {
@@ -47,7 +47,7 @@ export default {
           this.minTemp = response.data.main.temp_min;
           this.maxTemp = response.data.main.temp_max;
           this.pressure = response.data.main.pressure;
-          this.humidity = response.data.main.humidity;
+          this.humidity = `${response.data.main.humidity}%`;
           this.wind = `${response.data.wind.speed}m/s`;
           this.overcast = response.data.weather[0].description;
           this.icon = require(`../assets/${response.data.weather[0].icon.slice(0, 2)}.svg`);
@@ -58,9 +58,21 @@ export default {
           console.log(error);
         });
     },
+    geolocation() {
+      navigator.geolocation.getCurrentPosition(this.buildURL, this.geoError);
+    },
+    buildURL(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      this.getWeather(`${this.API}&lat=${lat}&lon=${lon}${this.KEY}`);
+    },
+    geoError() {
+      this.getWeather(`${this.API}&lat=0&lon=0${this.KEY}`);
+    },
   },
   beforeMount() {
-    this.getWeather();
+    this.geolocation();
   },
 };
 </script>
