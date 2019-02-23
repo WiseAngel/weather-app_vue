@@ -33,8 +33,7 @@ export default {
       overcast: '',
       icon: '',
       position: '',
-      API: 'http://api.openweathermap.org/data/2.5/weather?units=metric',
-      KEY: '&lang=ru&APPID=b46555d11adddbc7266f70b191fda39f',
+
     };
   },
   methods: {
@@ -42,7 +41,7 @@ export default {
       axios
         .get(url)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.currentTemp = response.data.main.temp;
           this.minTemp = response.data.main.temp_min;
           this.maxTemp = response.data.main.temp_max;
@@ -72,8 +71,19 @@ export default {
     },
   },
   beforeMount() {
-    this.geolocation();
-  },
+    // this.geolocation();
+    axios.get('https://cors-anywhere.herokuapp.com/https://api.gismeteo.net/v2/weather/current/?latitude=0&longitude=0', {
+    headers: {
+      
+    }
+  })
+      .then((response) => {
+        console.log(response.data.response.humidity);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
 };
 </script>
 
