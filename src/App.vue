@@ -18,14 +18,9 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Montserrat:200,400|Vast+Shadow&subset=cyrillic')
 
 body
+  padding 0
+  margin 0
   background linear-gradient(#3d4869,#263048) fixed
-  font-family 'Montserrat', sans-serif
-
-#app
-  background url(assets/waves.svg) no-repeat
-  width 520px
-  height 170px
-  position absolute
-  top 35%
-  left 35%
+  font-family 'Arial', sans-serif
+  // font-family 'YS Text Web', sans-serif
 </style>
