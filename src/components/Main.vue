@@ -17,6 +17,7 @@
 
 <script>
 import axios from 'axios';
+import {keyOWM} from '@/_token';
 
 export default {
   name: 'Main',
@@ -34,7 +35,7 @@ export default {
       icon: '',
       position: '',
       API: 'http://api.openweathermap.org/data/2.5/weather?units=metric',
-      KEY: '&lang=ru&APPID=b46555d11adddbc7266f70b191fda39f',
+      KEY: keyOWM,
     };
   },
   methods: {
