@@ -9,7 +9,7 @@ import Main from './components/Main.vue';
 export default {
   name: 'app',
   components: {
-    Main,
+    Main
   },
 };
 </script>
@@ -22,5 +22,4 @@ body
   margin 0
   background linear-gradient(#3d4869,#263048) fixed
   font-family 'Arial', sans-serif
-  // font-family 'YS Text Web', sans-serif
 </style>

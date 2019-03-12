@@ -3,13 +3,12 @@
     <h4 class="city">{{ city }}</h4>
     <div class="main">
       <div class="main__inner main__inner_first">
-        <span class="main__temperature">{{ currentTemp }}°</span>
-        <!-- <img :src="require('../assets/weather__icons_main/c3.svg')" class="main__icon"> -->
+        <span class="main__temperature">{{ temperature.current }}°</span>
         <img :src="icon" class="main__icon">
       </div>
       <div class="main__inner main__inner_second">
-        <span class="main__description">{{ overcast }}</span>
-        <span class="main__temperature_comfort">Ощущается как: {{ comfortTemp }}°</span>
+        <span class="main__description">{{ description }}</span>
+        <span class="main__temperature_comfort">Ощущается как: {{ temperature.comfort }}°</span>
       </div>
 
     </div>
@@ -24,15 +23,16 @@
       </div>
       <div class="info__inner info__humidity">
         <img src="../assets/weather__icons_info/humidity.svg" class="info__icon icon__humidity">
-        <span class="info__description">{{ humidity }}</span>
+        <span class="info__description">{{ humidity }} %</span>
       </div>
       <div class="info__inner info__pressure">
         <img src="../assets/weather__icons_info/pressure.svg" class="info__icon icon__pressure">
-        <span class="info__description">{{ pressure }}</span>
+        <span class="info__description">{{ pressure }} мм рт. ст.</span>
       </div>
       <div class="info__inner info__wind">
         <img src="../assets/weather__icons_info/wind.svg" class="info__icon icon__wind">
-        <span class="info__description">{{ wind }}</span>
+        <span class="info__description">{{ wind.speed }} м/с, {{ wind.direction }}</span>
+        <img src="../assets/weather__icons_info/deg.svg" class="info__icon icon__deg">
       </div>
     </div>
   </div>
@@ -51,19 +51,24 @@ export default {
       PARAMS_GIS: tokenGis,
       API_OWM: 'http://api.openweathermap.org/data/2.5/weather?units=metric',
       KEY_OWM: keyOWM,
-      city: 'Волгодонск',
-      currentTemp: '+32',
-      comfortTemp: '-7',
-      sunrise: '07:00',
-      sunset: '17:00',
-      pressure: '777',
-      humidity: '77',
-      wind: '7',
-      overcast: 'Пасмурно',
-      icon: '../assets/new/c3.svg',
-      position: 'Волгодонск',
-      windDirection: ['Ш', 'С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'],
-      w: '5 м/с, СВ',
+      city: '',
+      temperature: {
+        current: '',
+        comfort: '',
+      },
+      sunrise: '',
+      sunset: '',
+      pressure: '',
+      humidity: '',
+      wind: {
+        directions: ['Ш', 'С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'],
+        speed: '',
+        direction: '',
+        degree: ''
+      },
+      description: '',
+      icon: '',
+     
     };
   },
   methods: {
@@ -72,35 +77,39 @@ export default {
         .then((response) => {
           const res = response.data.response;
 
-          this.currentTemp = (() => {
+          this.temperature.current = (() => {
             const temp = Math.round(Number(res.temperature.air.C));
             return temp > 0 ? `+${temp}` : temp;
           })();
-          this.comfortTemp = (() => {
+          this.temperature.comfort = (() => {
             const temp = Math.round(Number(res.temperature.comfort.C));
             return temp > 0 ? `+${temp}` : temp;
           })();
-          this.pressure = `${res.pressure.mm_hg_atm} мм рт. ст.`;
-          this.humidity = `${res.humidity.percent}%`;
-          this.wind = `${res.wind.speed.m_s} м/с, ${this.windDirection[res.wind.direction.scale_8]}`;
-          this.overcast = res.description.full;
+          this.pressure = res.pressure.mm_hg_atm;
+          this.humidity = res.humidity.percent;
+          this.wind.speed = res.wind.speed.m_s, 
+          this.wind.direction = this.wind.directions[res.wind.direction.scale_8];
+          this.wind.degree = res.wind.direction.degree;
+          this.description = res.description.full;
           this.icon = require(`../assets/weather__icons_main/${res.icon}.svg`);
-          console.log(response);
+         
         })
         .catch((error) => {
           throw new Error(`Не удалось получить данные погоды от Gismeteo \n${error.message}`);
         });
     },
+
     getCity(url) {
       axios.get(url, this.PARAMS_GIS)
         .then((response) => {
           this.city = response.data.response[0].name;
-          console.log(response.data.response);
+        
         })
         .catch((error) => {
           throw new Error(`Не удалось получить название города от Gismeteo \n${error.message}`);
         });
     },
+
     getWeatherOWM(url) {
       axios.get(url)
         .then((response) => {
@@ -108,15 +117,13 @@ export default {
 
           this.sunrise = new Date(res.sys.sunrise * 1000).toLocaleTimeString('ru-RU').slice(0, 5);
           this.sunset = new Date(res.sys.sunset * 1000).toLocaleTimeString('ru-RU').slice(0, 5);
-          console.log(response);
+      
         })
         .catch((error) => {
           throw new Error(`Не удалось получить данные погоды от OWM \n${error.message}`);
         });
     },
-    geolocation() {
-      navigator.geolocation.getCurrentPosition(this.buildURL, this.geoError, { enableHighAccuracy: true });
-    },
+
     buildURL(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
@@ -125,15 +132,29 @@ export default {
       this.getCity(`${this.API_GIS_CITIES}?latitude=${lat}&longitude=${lon}&limit=1`);
       this.getWeatherOWM(`${this.API_OWM}&lat=${lat}&lon=${lon}${this.KEY_OWM}`);
     },
+
     geoError(error) {
       this.getWeatherGis(`${this.API_GIS}?latitude=0&longitude=0`);
       this.getCity(`${this.API_GIS_CITIES}?latitude=0&longitude=0&limit=1`);
       this.getWeatherOWM(`${this.API_OWM}&lat=0&lon=0${this.KEY_OWM}`);
       console.log(error);
     },
+
+    geolocation() {
+      navigator.geolocation.getCurrentPosition(this.buildURL, this.geoError, { enableHighAccuracy: true });
+    },
+
+    degree() {
+      const img = document.querySelector('.icon__deg');
+      
+      img.style.transform = `rotate(${this.wind.degree}deg)`;
+    },
   },
   beforeMount() {
     this.geolocation();
+  },
+  beforeUpdate() {
+    this.degree(); 
   },
 };
 </script>
