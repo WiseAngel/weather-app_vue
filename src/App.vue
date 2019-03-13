@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+   <Search />
    <Main />
   </div>
 </template>
@@ -22,5 +23,4 @@ body
   margin 0
   background linear-gradient(#3d4869,#263048) fixed
   font-family 'Arial', sans-serif
-  // font-family 'YS Text Web', sans-serif
 </style>
