@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+   <Search />
    <Main />
   </div>
 </template>
@@ -9,7 +10,7 @@ import Main from './components/Main.vue';
 export default {
   name: 'app',
   components: {
-    Main
+    Main,
   },
 };
 </script>
