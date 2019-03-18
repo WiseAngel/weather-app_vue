@@ -46,7 +46,7 @@ import axios from 'axios';
 import {tokenGis, keyOWM} from '@/_token';
 
 export default {
-  name: 'Main',
+  name: 'Widget',
   data() {
     return {
       API: {
@@ -100,14 +100,9 @@ export default {
         .then((response) => {
           const res = response.data.response;
 
-          this.temperature.current = (() => {
-            const temp = Math.round(Number(res.temperature.air.C));
-            return temp > 0 ? `+${temp}` : temp;
-          })();
-          this.temperature.comfort = (() => {
-            const temp = Math.round(Number(res.temperature.comfort.C));
-            return temp > 0 ? `+${temp}` : temp;
-          })();
+          // console.log(res);
+          this.temperature.current = this.temperatureFormat(res.temperature.air.C);
+          this.temperature.comfort = this.temperatureFormat(res.temperature.comfort.C);
           this.pressure = res.pressure.mm_hg_atm;
           this.humidity = res.humidity.percent;
           this.wind.speed = res.wind.speed.m_s, 
@@ -164,14 +159,20 @@ export default {
     setBackground() {
       const c = this.cloudiness;
       const p = this.precipitation.type;
+      const hour = new Date().getHours();
 
       if (!c && !p) {
-        this.bgi = require('../assets/bgs/d.jpg');
+        this.bgi = (hour > 21 || hour < 6) ? require('../assets/bgs/n_c.jpg') : require('../assets/bgs/d.jpg');
       } else if (c && !p) {
-        this.bgi = require('../assets/bgs/d_c.jpg');
+        this.bgi = (hour > 21 || hour < 6) ? require('../assets/bgs/n_c.jpg') : require('../assets/bgs/d_c.jpg');
       } else if (c && p) {
-        this.bgi = require('../assets/bgs/d_r.jpg');
+        this.bgi = (hour > 21 || hour < 6) ? require('../assets/bgs/n_r.jpg') : require('../assets/bgs/d_r.jpg');
       }
+    },
+    
+    temperatureFormat(temp) {
+      let temperature = Math.round(Number(temp));
+      return temperature > 0 ? `+${temperature}` : temperature;
     },
   },
   beforeMount() {

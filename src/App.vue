@@ -1,16 +1,18 @@
 <template>
   <div id="app">
    <Search />
-   <Main />
+   <Widget />
   </div>
 </template>
 <script>
-import Main from './components/Main.vue';
+import Widget from './components/Widget.vue';
+import Search from './components/Search.vue';
 
 export default {
   name: 'app',
   components: {
-    Main,
+    Widget,
+    Search
   },
 };
 </script>
