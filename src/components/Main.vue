@@ -43,17 +43,17 @@ export default {
     foo(){
       this.$store.dispatch('foo')
     },
-    getWeather(){
-      this.$store.dispatch('getWeather')
-    },
-    buildURL(){
-      this.$store.dispatch('buildURL')
-    },
-    geoError(){
-      this.$store.dispatch('geoError')
-    },
+    // getWeather(){
+    //   this.$store.dispatch('getWeather')
+    // },
+    // buildURL(){
+    //   this.$store.dispatch('buildURL')
+    // },
+    // geoError(){
+    //   this.$store.dispatch('geoError')
+    // },
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // getWeather(url) {
     //   axios
     //     .get(url)
@@ -74,28 +74,38 @@ export default {
     //       console.log(error);
     //     });
     // },
-    geolocation() {
-      navigator.geolocation.getCurrentPosition(this.buildURL, this.geoError);
-    },
-    buildURL(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
+    // geolocation() {
+    //   navigator.geolocation.getCurrentPosition(this.$store.dispatch('getWeather'), this.$store.dispatch('geoError'));
+    //   // navigator.geolocation.getCurrentPosition(this.buildURL, this.geoError);
+    // },
+    // buildURL(position) {
+    //   const lat = position.coords.latitude;
+    //   const lon = position.coords.longitude;
 
-      // this.getWeather(`${this.API}&lat=${lat}&lon=${lon}${this.KEY}`);
-      this.$store.dispatch('getWeather');
-    },
-    geoError() {
-      // this.getWeather(`${this.API}&lat=0&lon=0${this.KEY}`);
-    },
+    //   // this.getWeather(`${this.API}&lat=${lat}&lon=${lon}${this.KEY}`);
+    //   this.$store.dispatch('getWeather');
+    // },
+    // geoError() {
+    //   // this.getWeather(`${this.API}&lat=0&lon=0${this.KEY}`);
+    // },
   },
   beforeMount() {
-    // this.$store.dispatch('geolocation');
-    this.geolocation();
+    this.$store.dispatch('geolocation');
+    // this.geolocation();
   },
   computed: {
     data() {
       return this.$store.getters.data;
-    }
+    },
+    getWeather(){
+      this.$store.dispatch('getWeather')
+    },
+     buildURL(){
+      this.$store.dispatch('buildURL')
+    },
+    geoError(){
+      this.$store.dispatch('geoError')
+    },
   },
 };
 </script>
