@@ -40,8 +40,8 @@ export default {
   // },
   methods: {
 
-    foo(){
-      this.$store.dispatch('foo')
+    foo() {
+      this.$store.dispatch('foo');
     },
     // getWeather(){
     //   this.$store.dispatch('getWeather')
@@ -53,7 +53,7 @@ export default {
     //   this.$store.dispatch('geoError')
     // },
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // getWeather(url) {
     //   axios
     //     .get(url)
@@ -88,24 +88,39 @@ export default {
     // geoError() {
     //   // this.getWeather(`${this.API}&lat=0&lon=0${this.KEY}`);
     // },
+    geolocation() {
+      this.$store.dispatch('geolocation')
+        .then(() => {
+          // console.log(position);
+          this.$store.dispatch('buildURL');
+        })
+        .then((url) => {
+          console.log(url);
+          this.$store.dispatch('getWeather');
+        });
+    },
   },
   beforeMount() {
-    this.$store.dispatch('geolocation');
-    // this.geolocation();
+    // this.$store.dispatch('geolocation');
+    // this.$store.dispatch('getWeather');
+    // this.$store.dispatch('buildURL');
+
+    this.geolocation();
   },
   computed: {
     data() {
       return this.$store.getters.data;
     },
-    getWeather(){
-      this.$store.dispatch('getWeather')
+    getWeather() {
+      this.$store.dispatch('getWeather');
     },
-     buildURL(){
-      this.$store.dispatch('buildURL')
+    buildURL() {
+      this.$store.dispatch('buildURL');
     },
-    geoError(){
-      this.$store.dispatch('geoError')
+    geoError() {
+      this.$store.dispatch('geoError');
     },
+
   },
 };
 </script>
